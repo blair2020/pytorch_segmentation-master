@@ -1,0 +1,77 @@
+{
+    "name": "PSPNet",
+    "n_gpu": 2,
+    "use_synch_bn": true,
+
+    "arch": {
+        "type": "PSPNet",
+        "args": {
+            "backbone": "resnet50",
+            "freeze_bn": false,
+            "freeze_backbone": false
+        }
+    },
+
+    "train_loader": {
+        "type": "LLX",
+        "args":{
+            "data_dir": "data/llx_dataset3",
+            "batch_size": 6,
+            "base_size": 512,
+            "crop_size": 512,
+            "augment": false,
+            "shuffle": true,
+            "scale": true,
+            "flip": true,
+            "rotate": true,
+            "blur": false,
+            "split": "training",
+            "num_workers": 8
+        }
+    },
+
+    "val_loader": {
+        "type": "LLX",
+        "args":{
+            "data_dir": "data/llx_dataset3",
+            "batch_size": 2,
+            "crop_size": 512,
+            "val": true,
+            "split": "validation",
+            "num_workers": 4
+        }
+    },
+
+    "optimizer": {
+        "type": "SGD",
+        "differential_lr": true,
+        "args":{
+            "lr": 0.01,
+            "weight_decay": 1e-4,
+            "momentum": 0.9
+        }
+    },
+
+    "loss": "CrossEntropyLoss2d",
+    "ignore_index": -1,
+    "lr_scheduler": {
+        "type": "Poly",
+        "args": {}
+    },
+
+    "trainer": {
+        "epochs": 20,
+        "save_dir": "saved/",
+        "save_period": 5,
+  
+        "monitor": "max Mean_IoU",
+        "early_stop": 10,
+        
+        "tensorboard": true,
+        "log_dir": "saved/runs",
+        "log_per_iter": 20,
+
+        "val": true,
+        "val_per_epochs": 5
+    }
+}
